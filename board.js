@@ -27,25 +27,67 @@ Board.prototype.show = function() {
 			let xpos = this.piece_size*(0.5 + col);
 			let ypos = this.piece_size*(0.5 + row);
 			if (piece == "empty") fill(255);
-			if (piece == "red") fill(255,0,0);
-			if (piece == "yellow") fill(255,255,0);
+			if (piece == "red" || piece == "winner_red") fill(255,0,0);
+			if (piece == "yellow" || piece == "winner_yellow") fill(255,255,0);
 			stroke(0);
 			strokeWeight(3);
-			ellipse(xpos,ypos, piece_size*0.9); 
+			ellipse(xpos, ypos, piece_size*0.9); 
+			if (piece == "winner_red" || piece == "winner_yellow" ) {
+				fill(255);
+				strokeWeight(1);
+				ellipse(xpos, ypos, piece_size*0.2);
+			}
 		}
 	}
 }
 
 Board.prototype.put = function(col) {
-	console.log(this.isGameOver);
-	if (this.isGameOver == true) {
-		return;
-	}
-	for (row = this.rows-1; row >=0 && this.board[col + row*this.cols] != "empty" ; row--) { ; }
+	if (this.isGameOver == true) return;
+
+	for (row = this.rows-1; row >=0 && this.board[col + row*this.cols] != "empty" ; row--) { ; } 
 	if (row >= 0) {
 		this.board[col + row*this.cols] = this.whoToMove;
+
+		// check for winning move
+		let winner = (this.whoToMove == "red")?"winner_red":"winner_yellow";
+		console.log("winner = " + winner)
+		console.log("row = " + row)
+		console.log("col = " + col)
+		if (row <= 2 && 
+			this.whoToMove == this.board[col + (row+1)*this.cols] &&
+			this.whoToMove == this.board[col + (row+2)*this.cols] &&
+			this.whoToMove == this.board[col + (row+3)*this.cols]) 
+		{
+			console.log("winner case 1");
+			this.winner = this.whoToMove;
+			this.isGameOver = true;
+			this.board[col + (row+0)*this.cols] = winner;
+			this.board[col + (row+1)*this.cols] = winner;
+			this.board[col + (row+2)*this.cols] = winner;
+			this.board[col + (row+3)*this.cols] = winner;
+			return;
+		}
+		let matches = 0;
+		for (i = 0; i < this.cols; i++) {
+			if (this.whoToMove == this.board[i + row*this.cols]) {
+				matches++
+				if (matches == 4) {
+					console.log("winner case 2");
+					this.winner = this.whoToMove;
+					this.isGameOver = true;
+					this.board[(i-0) + row*this.cols] = winner;
+					this.board[(i-1) + row*this.cols] = winner;
+					this.board[(i-2) + row*this.cols] = winner;
+					this.board[(i-3) + row*this.cols] = winner;
+					return;
+				}
+			} else { matches = 0 }
+		}
+			
+		// switch player
 		this.whoToMove = (this.whoToMove == "red"?"yellow":"red");
 	}
+	
 }
 
 Board.prototype.get = function(row, col) {
