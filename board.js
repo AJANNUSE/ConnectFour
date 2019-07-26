@@ -77,37 +77,40 @@ class Board {
 					}
 				} else { matches = 0 }
 			}
-			matches = 0;
-			for (let i = -max(this.rows, this.cols); i <= max(this.rows, this.cols); i++) {
-				if (this.whoToMove == this.board[(col+i) + (row+i)*this.cols]) {
-					matches++;
-					if (matches == 4) {
-						this.winner = this.whoToMove;
-						this.isGameOver = true;
-						this.board[(col+i-0) + (row-0+i)*this.cols] = winner;
-						this.board[(col+i-1) + (row-1+i)*this.cols] = winner;
-						this.board[(col+i-2) + (row-2+i)*this.cols] = winner;
-						this.board[(col+i-3) + (row-3+i)*this.cols] = winner;
-						return;
+			for (let start_col = 0; start_col + 3 < this.cols; start_col++) {  // NW -> SE
+				for (let start_row = 0; start_row + 3 < this.rows; start_row++) {
+					matches = 0;
+					for (let i = 0; i < 4; i++) {
+						if (this.whoToMove == this.board[(start_col+i) + (start_row+i)*this.cols]) { matches++; }
+						if (matches == 4) {
+							this.winner = this.whoToMove;
+							this.isGameOver = true;
+							this.board[(start_col+0) + (start_row+0)*this.cols] = winner;
+							this.board[(start_col+1) + (start_row+1)*this.cols] = winner;
+							this.board[(start_col+2) + (start_row+2)*this.cols] = winner;
+							this.board[(start_col+3) + (start_row+3)*this.cols] = winner;
+							return;
+						}
 					}
-				} else { matches = 0 }
+				}
 			}
-			matches = 0;
-			for (let i = -max(this.rows, this.cols); i <= max(this.rows, this.cols); i++) {
-				if (this.whoToMove == this.board[(col+i) + (row-i)*this.cols]) {
-					matches++;
-					if (matches == 4) {
-						this.winner = this.whoToMove;
-						this.isGameOver = true;
-						this.board[(col+i-0) + (row+0-i)*this.cols] = winner;
-						this.board[(col+i-1) + (row+1-i)*this.cols] = winner;
-						this.board[(col+i-2) + (row+2-i)*this.cols] = winner;
-						this.board[(col+i-3) + (row+3-i)*this.cols] = winner;
-						return;
+			for (let start_col = 3; start_col + 3 < this.cols; start_col++) {  // NE -> SW
+				for (let start_row = 0; start_row + 3 < this.rows; start_row++) {
+					matches = 0;
+					for (let i = 0; i < 4; i++) {
+						if (this.whoToMove == this.board[(start_col-i) + (start_row+i)*this.cols]) { matches++; }
+						if (matches == 4) {
+							this.winner = this.whoToMove;
+							this.isGameOver = true;
+							this.board[(start_col-0) + (start_row+0)*this.cols] = winner;
+							this.board[(start_col-1) + (start_row+1)*this.cols] = winner;
+							this.board[(start_col-2) + (start_row+2)*this.cols] = winner;
+							this.board[(start_col-3) + (start_row+3)*this.cols] = winner;
+							return;
+						}
 					}
-				} else { matches = 0 }
+				}
 			}
-
 
 			// switch player
 			this.whoToMove = (this.whoToMove == "red"?"yellow":"red");

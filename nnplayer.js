@@ -11,7 +11,7 @@ class NNPlayer {
 			this.brain = brain.copy();
 			this.brain.mutate(mutate);
 		} else {
-			this.brain = new NeuralNetwork(3*7*6, 25, 7);
+			this.brain = new NeuralNetwork(3*7*6, 20, 7);
 			this.brain.setActivationFunction(relu);
 		}
 		this.score = 0;
